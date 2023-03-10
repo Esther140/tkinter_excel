@@ -3,27 +3,32 @@ import tkinter
 from tkinter import ttk
 from tkcalendar import Calendar
 from tkinter import messagebox
-import os
-import openpyxl
+import mysql.connector 
+mydb = mysql.connector.connect(host="localhost",username="root",password="xter1171",database="jande")
+mycursor =mydb.cursor()
+
+
+# import pyodbc 
+# cnxn = pyodbc.connect('DRIVER={Devart ODBC Driver for SQL Server};Server=localhost;Database=Jande;Port=3306;User ID=root;Password=Xter1171')
 def enter_data():
     
         Name = Employee_name_entry.get()
         Bags_made =Bags_made_spinbox.get()
         Bags_size =Bags_size_combobox.get()
         Date=Date_entry.get()
-        print("Name:",Name,"Bags Made:",Bags_made,"size:",Bags_size)
+        print("Name:",Name,"Bags Made:",Bags_made,"size:",Bags_size,Date)
 
-        filepath = "C:\\Users\\itser\\Downloads\\Jande\\data.xlsx"
-        if not os.path.exists(filepath):
-              workbook= openpyxl.Workbook()
-              sheet =workbook.active
-              heading =["Name ","Date","Bags made","Bags size"]
-              sheet.append(heading)
-              workbook.save(filepath)
-        workbook = openpyxl.load_workbook(filepath)
-        sheet = workbook.active
-        sheet.append([Name,Date,Bags_made,Bags_size])
-        workbook.save(filepath)
+
+        sql = "INSERT INTO employee (EmployeeName,Bags_made,date,Bags_size) VALUES (%s, %s,%s,%s)"
+        val = (Name,Bags_made,Date,Bags_size)
+        mycursor.execute(sql, val)
+        mydb.commit ()
+        print ( 'Data entered successfully.' )
+
+
+       
+
+
 
 
 window = tkinter.Tk()
